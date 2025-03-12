@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Note_backend_s12025.apps.NoteBackendS12025Config',
+    'Note_backend_s12025',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'note_app'
 ]
 
 MIDDLEWARE = [

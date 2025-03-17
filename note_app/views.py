@@ -26,3 +26,11 @@ class LogoutView(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=204)
+
+
+class UserView(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class =  UserSerializer
+
+    def get_object(self):
+        return self.request.user

@@ -1,0 +1,44 @@
+# tests/test_api.py
+from django.test import TestCase, Client
+from django.urls import reverse
+from rest_framework import status
+from django.contrib.auth.models import User
+from rest_framework.test import APIClient
+
+class LoginAPITestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.login_url = reverse('https://cicd-backend-sandy.vercel.app/api/login/')
+
+    def test_valid_login(self):
+        # Create a test user
+        user = User.objects.create_user('testuser', 'test@example.com', 'password123')
+
+        # Send a POST request to the login API
+        response = self.client.post(self.login_url, {
+            'username': 'testuser',
+            'password': 'password123'
+        }, format='json')
+
+        # Assert that the response is successful (200 OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Assert that the response contains a valid token
+        self.assertIn('token', response.data)
+
+    def test_invalid_login(self):
+        # Send a POST request to the login API with invalid credentials
+        response = self.client.post(self.login_url, {
+            'username': 'invaliduser',
+            'password': 'wrongpassword'
+        }, format='json')
+
+        # Assert that the response is unsuccessful (401 Unauthorized)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_missing_credentials(self):
+        # Send a POST request to the login API with missing credentials
+        response = self.client.post(self.login_url, {}, format='json')
+
+        # Assert that the response is unsuccessful (400 Bad Request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
